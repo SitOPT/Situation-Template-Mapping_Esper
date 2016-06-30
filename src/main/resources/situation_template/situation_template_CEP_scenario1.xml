@@ -1,0 +1,59 @@
+<SituationTemplate id="scenario_1" name="Monitoring at Conveyor Belt">
+ <Situation id="A" name="Object wrong positioned">
+
+  <situationNode id="A9" name="Object wrong positioned"/>
+
+   <operationNode id="A8" name="Combine and">
+    <parent parentID="A9"/>
+    <type>and</type>     
+   </operationNode>
+   	
+   <operationNode id="A7" name="Combine or">
+    <parent parentID="A8"/>
+    <type>or</type>			
+   </operationNode>
+
+   <conditionNode id="A6" name="Object detected" type="condValue">
+    <measureName>distance</measureName>
+    <opType>lowerThan</opType>
+    <condValue> <value>60</value> </condValue>
+    <timeInterval>500</timeInterval>
+    <parent parentID="A8"/>   
+   </conditionNode>
+   
+   <conditionNode id="A5" name="Upside down positioned" type="condValue">
+    <measureName>distance</measureName>
+    <opType>greaterThan</opType>
+    <condValue> <value>50</value> </condValue>
+    <parent parentID="A7"/>   
+   </conditionNode>
+
+   <conditionNode id="A4" name="Outside limits" type="condVariable">
+    <measureName>distance</measureName>
+    <opType>notEquals</opType>
+    <condValue><value>10</value></condValue>
+    <condVariable>
+     <variable contextNodeID="A0"/>
+     <variable contextNodeID="A1"/>
+    </condVariable>
+    <parent parentID="A7"/>
+   </conditionNode>
+
+   <contextNode id="A3" name= "Top Distance Sensor" type="DistanceMeterEvent">
+    <parent parentID="A6"/>
+   </contextNode>
+ 
+    <contextNode id="A2" name= "Top Distance Sensor" type="DistanceMeterEvent">
+    <parent parentID="A5"/>
+   </contextNode>
+     		
+   <contextNode id="A1" name= "Right Distance Sensor" type="DistanceMeterEvent">
+    <parent parentID="A4"/>
+   </contextNode>
+
+   <contextNode id="A0" name= "Left Distance Sensor" type="DistanceMeterEvent">
+    <parent parentID="A4"/>
+   </contextNode>
+
+ </Situation>
+</SituationTemplate>

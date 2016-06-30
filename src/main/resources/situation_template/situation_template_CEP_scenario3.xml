@@ -1,0 +1,34 @@
+<SituationTemplate id="scenario_3" name="Monitoring Machine Status">
+ <Situation id="A" name="Machine Blocked">
+
+  <situationNode id="A5" name="Machine Blocked"/>
+	
+   <operationNode id="A4" name="Combine">
+    <parent parentID="A5"/>
+    <type>or</type>			
+   </operationNode>
+
+   <conditionNode id="A3" name="Low level" type="condValue">
+    <measureName>distance</measureName>
+    <opType>lowerThan</opType>
+    <condValue> <value>10</value> </condValue>
+    <parent parentID="A4"/>
+   </conditionNode>
+
+   <conditionNode id="A2" name="High temperature" type="condValue">
+    <measureName>temperature</measureName>
+    <opType>greaterThan</opType>
+    <condValue><value>90</value></condValue>
+    <parent parentID="A4"/>
+   </conditionNode>
+
+   <contextNode id="A1" name= "Level Sensor" type="DistanceMeterEvent">
+    <parent parentID="A3"/>
+   </contextNode>
+
+   <contextNode id="A0" name= "Temperature Sensor" type="TemperatureEvent">
+    <parent parentID="A2"/>
+   </contextNode>
+
+ </Situation>
+</SituationTemplate>

@@ -1,0 +1,59 @@
+<SituationTemplate id="sitrec" name="System Observation">
+	<Situation id="A" name="System Critical">
+		
+		<situationNode name="System Critical" id="A9"/>
+	
+		<operationNode id="A6" name="Combine">
+			<parent parentID="A9"/>
+			<type>or</type>
+		</operationNode>
+
+		<operationNode id="A5" name="Combine">
+			<parent parentID="A6"/>
+			<type>and</type>			
+		</operationNode>						
+		
+		<conditionNode id="A7" name="Collision risk">
+			<measureName>distance</measureName>
+			<opType>lowerThan</opType>
+			<condValue>
+				<value>10</value>
+			</condValue>
+			<parent parentID="A5"/>
+		</conditionNode>
+
+		<conditionNode id="A8" name="Collision risk">
+			<measureName>distance</measureName>
+			<opType>lowerThan</opType>
+			<condValue>
+				<value>10</value>
+			</condValue>
+			<parent parentID="A5"/>
+		</conditionNode>
+		
+		<conditionNode id="A3" name="Wrong Position" type="condVariable">
+			<measureName>distance</measureName>
+			<opType>lowerThan</opType>
+			<condValue>
+				<value>10</value>
+			</condValue>
+			<condVariable>
+				<variable contextNodeID="A0"/>
+				<variable contextNodeID="A1"/>
+			</condVariable>
+			<parent parentID="A6"/>
+		</conditionNode>
+		
+
+		<contextNode id="A0" name= "Distance Sensor 1" type="DistanceMeterEvent">
+			<parent parentID="A7"/>
+			<parent parentID="A3"/>
+		</contextNode>
+		
+		<contextNode id="A1" name= "Distance Sensor 2" type="DistanceMeterEvent">
+			<parent parentID="A8"/>
+			<parent parentID="A3"/>
+		</contextNode>
+		
+	</Situation>
+</SituationTemplate>

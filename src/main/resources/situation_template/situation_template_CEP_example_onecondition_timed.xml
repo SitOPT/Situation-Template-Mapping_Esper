@@ -1,0 +1,26 @@
+<SituationTemplate id="distanceSensor_simpleCollision_timed" name="collision risk">
+	<Situation id="A" name="System Critical">
+		
+		<situationNode name="System Critical" id="A5"/>
+		
+		<operationNode id="A4" name="Combine">
+			<parent parentID="A5"/>
+			<type>or</type>			
+		</operationNode>
+					
+		<conditionNode id="A2" name="Collision risk">
+			<measureName>distance</measureName>
+			<opType>lowerThan</opType>
+			<condValue>
+				<value>10</value>
+			</condValue>
+			<timeInterval>5</timeInterval>
+			<parent parentID="A4"/>
+		</conditionNode>
+			
+		<contextNode id="A0" name= "Distance Sensor 1" type="DistanceMeterEvent">
+			<parent parentID="A2"/>
+		</contextNode>		
+		
+	</Situation>
+</SituationTemplate>

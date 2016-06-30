@@ -1,0 +1,31 @@
+<SituationTemplate id="scenario_1" name="Monitoring at Conveyor Belt">
+ <Situation id="A" name="Object wrong positioned">
+
+  <situationNode id="A6" name="Object wrong positioned"/>
+	
+   <operationNode id="A5" name="Combine">
+    <parent parentID="A6"/>
+    <type>or</type>			
+   </operationNode>
+
+   <conditionNode id="A3" name="Wrongly positioned at left" type="condVariable">
+    <measureName>distance</measureName>
+    <opType>lowerThan</opType>
+    <condValue><value>10</value></condValue>
+    <condVariable>
+     <variable contextNodeID="A0"/>
+     <variable contextNodeID="A1"/>
+    </condVariable>
+    <parent parentID="A5"/>
+   </conditionNode>
+   		
+   <contextNode id="A1" name= "Right Distance Sensor" type="DistanceMeterEvent">
+    <parent parentID="A3"/>
+   </contextNode>
+
+   <contextNode id="A0" name= "Left Distance Sensor" type="DistanceMeterEvent">
+    <parent parentID="A3"/>
+   </contextNode>
+
+ </Situation>
+</SituationTemplate>

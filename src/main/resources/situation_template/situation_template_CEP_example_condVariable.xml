@@ -1,0 +1,34 @@
+<SituationTemplate id="distanceSensors_samelevel" name="System Observation">
+	<Situation id="A" name="System Critical">
+		
+		<situationNode name="System Critical" id="A5"/>
+			
+		<operationNode id="A4" name="Combine">
+			<parent parentID="A5"/>
+			<type>or</type>			
+		</operationNode>
+				
+		<conditionNode id="A3" name="Wrong Position" type="condVariable">
+			<measureName>distance</measureName>
+			<opType>greaterThan</opType>
+			<condValue>
+				<value>10</value>
+			</condValue>
+			<condVariable>
+				<variable contextNodeID="A0"/>
+				<variable contextNodeID="A1"/>
+			</condVariable>
+			<timeInterval>10</timeInterval>
+			<parent parentID="A4"/>
+		</conditionNode>
+		
+		<contextNode id="A0" name= "Distance Sensor 1" type="DistanceMeterEvent">
+			<parent parentID="A3"/>
+		</contextNode>
+		
+		<contextNode id="A1" name= "Distance Sensor 2" type="DistanceMeterEvent">
+			<parent parentID="A3"/>
+		</contextNode>
+		
+	</Situation>
+</SituationTemplate>
