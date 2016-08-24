@@ -1,14 +1,13 @@
 package mapping;
 
 
-import java.io.File;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import situation_template_cep.*;
+import situation_template_cep.TConditionNode.CondValue;
+import situation_template_cep.TConditionNode.CondVariable;
 
-import javax.swing.JFileChooser;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBContext;
@@ -16,19 +15,15 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import situation_template_cep.TConditionNode;
-import situation_template_cep.TConditionNode.CondValue;
-import situation_template_cep.TConditionNode.CondVariable;
-import situation_template_cep.TContextNode;
-import situation_template_cep.TOperationNode;
-import situation_template_cep.TParent;
-import situation_template_cep.TSituationNode;
-import situation_template_cep.TSituationTemplate;
-import situation_template_cep.TVariableInput;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -76,35 +71,50 @@ public class ST2EPL_Mapper {
     }
     
     public static void main(String[] args) {
-           	
-        FileFilter filter = new FileNameExtensionFilter("XML File", "xml");
-        JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new java.io.File(".\\src\\main\\resources\\situation_template"));
-        chooser.setDialogTitle("Please choose situation template files");
-        chooser.setMultiSelectionEnabled(false);
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser.setAcceptAllFileFilterUsed(false);
-        chooser.addChoosableFileFilter(filter);
-        //
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-        	
+        boolean usedTempFile = args.length > 0;
+        File situationTemplate;
+        if (usedTempFile) {
             try {
-            	File situationTemplate = chooser.getSelectedFile();
-            	
-                ST2EPL_Mapper mapper = new ST2EPL_Mapper(situationTemplate);
-                String situationTemplateID = mapper.getSituationTemplateID();
-                log.debug(situationTemplateID);
-                String mappedStatement_sitOccurred = mapper.getQuerySituationOccurred();
-                log.debug(mappedStatement_sitOccurred);
-                String mappedStatement_sitStopped = mapper.getQuerySituationStopped();
-                log.debug(mappedStatement_sitStopped);
+                Path temp = Files.createTempFile("", "temp");
+                String xml = args[0];
+                xml = xml.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ');
+                Files.write(temp, xml.getBytes());
+                System.out.println(temp.toString());
+                situationTemplate = new File(temp.toString());
+            } catch (IOException e) {
+                log.info("Could not create temporary file:\n" + e.getMessage());
+                return;
             }
-            catch (JAXBException e) {
-                log.error("Situation Template is not valid!");
-            }
-        	
         } else {
-            log.info("No Selection ");
+            FileFilter filter = new FileNameExtensionFilter("XML File", "xml");
+            JFileChooser chooser = new JFileChooser();
+            chooser.setCurrentDirectory(new File(".\\src\\main\\resources\\situation_template"));
+            chooser.setDialogTitle("Please choose situation template files");
+            chooser.setMultiSelectionEnabled(false);
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+            chooser.addChoosableFileFilter(filter);
+            //
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                situationTemplate = chooser.getSelectedFile();
+            } else {
+                log.info("No Selection ");
+                return;
+            }
+        }
+        try {
+            ST2EPL_Mapper mapper = new ST2EPL_Mapper(situationTemplate);
+            String situationTemplateID = mapper.getSituationTemplateID();
+            log.debug(situationTemplateID);
+            String mappedStatement_sitOccurred = mapper.getQuerySituationOccurred();
+            log.debug(mappedStatement_sitOccurred);
+            String mappedStatement_sitStopped = mapper.getQuerySituationStopped();
+            log.debug(mappedStatement_sitStopped);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        if (usedTempFile) {
+            situationTemplate.delete();
         }
     }
 
